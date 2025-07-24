@@ -17,7 +17,7 @@
     "fitness",
     "workout-log"
   ],
-  "author": "Your Name",
+  "author": "trucvhc <trucvhc@fpt.com> (https://github.com/trucvhc)",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
