@@ -351,6 +351,9 @@ curl -X POST http://localhost:3000/api/users/valid-id/exercises -d "duration=30"
 
 ## 📝 Author
 
+**trucvhc** - Data Engineer  
+- GitHub: [@trucvhc](https://github.com/trucvhc) 
+
 Created for FreeCodeCamp Back End Development and APIs Certification
 
 ## 📄 License
