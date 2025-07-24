@@ -1,1 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .api-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .api-endpoint {
+            background: #333;
+            color: #00ff88;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            border: 1px solid #555;
+            display: inline-block;
+        }
+        
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .result-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid #333;
+            min-height: 80px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .users-list {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-item {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .user-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .user-id {
+            color: #666;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+        
+        .loading {
+            color: #667eea;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .filter-section {
+            background: #e8f4fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .examples {
+            background: #fff3cd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .example-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .example-code {
+            font-family: 'Courier New', monospace;
+            color: #666;
+            font-size: 0.8rem;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💪 Exercise Tracker</h1>
+        <p class="subtitle">Track your workouts and fitness activities</p>
+        
+        <div class="api-section">
+            <h3>API Endpoints</h3>
+            <div class="api-endpoint">POST /api/users</div>
+            <div class="api-endpoint">GET /api/users</div>
+            <div class="api-endpoint">POST /api/users/:_id/exercises</div>
+            <div class="api-endpoint">GET /api/users/:_id/logs</div>
+            <p><strong>Create users</strong>, <strong>add exercises</strong>, and <strong>view workout logs</strong></p>
+        </div>
+        
+        <div class="forms-grid">
+            <!-- Create User Form -->
+            <div class="form-section">
+                <h3>👤 Create New User</h3>
+                <form id="createUserForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+                    <button type="submit" class="btn" id="createUserBtn">
+                        🚀 Create User
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Add Exercise Form -->
+            <div class="form-section">
+                <h3>🏋️ Add Exercise</h3>
+                <form id="addExerciseForm">
+                    <div class="form-group">
+                        <label for="userId">Select User:</label>
+                        <select id="userId" required>
+                            <option value="">Select a user...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Exercise Description:</label>
+                        <input type="text" id="description" placeholder="e.g., Running, Push-ups" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes):</label>
+                        <input type="number" id="duration" placeholder="30" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseDate">Date (optional):</label>
+                        <input type="date" id="exerciseDate">
+                    </div>
+                    <button type="submit" class="btn" id="addExerciseBtn">
+                        ➕ Add Exercise
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Users List -->
+        <div class="users-list" id="usersList" style="display: none;">
+            <h3>👥 All Users</h3>
+            <div id="usersContainer"></div>
+            <button class="btn btn-secondary" onclick="loadUsers()">🔄 Refresh Users</button>
+        </div>
+        
+        <!-- Log Filters -->
+        <div class="filter-section" id="filterSection" style="display: none;">
+            <h3>📊 View Exercise Log</h3>
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label for="logUserId">User:</label>
+                    <select id="logUserId">
+                        <option value="">Select user...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fromDate">From Date:</label>
+                    <input type="date" id="fromDate">
+                </div>
+                <div class="form-group">
+                    <label for="toDate">To Date:</label>
+                    <input type="date" id="toDate">
+                </div>
+                <div class="form-group">
+                    <label for="limit">Limit:</label>
+                    <input type="number" id="limit" placeholder="10" min="1">
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="loadExerciseLog()">📋 Load Exercise Log</button>
+        </div>
+        
+        <!-- Results -->
+        <div class="result-section">
+            <h3>📊 API Response</h3>
+            <div id="apiResult" class="result">Welcome to Exercise Tracker! Create a user or load users to get started...</div>
+        </div>
+        
+        <div class="examples">
+            <h3>📋 API Response Examples</h3>
+            <div class="example-item">
+                <div class="example-title">1. Create User</div>
+                <div class="example-code">POST /api/users
+{"username": "fcc_test"}
 
+Response: {"username": "fcc_test", "_id": "507f1f77bcf86cd799439011"}</div>
+            </div>
+            <div class="example-item">
+                <div class="example-title">2. Add Exercise</div>
+                <div class="example-code">POST /api/users/507f1f77bcf86cd799439011/exercises
+{"description": "test", "duration": 60, "date": "1990-01-01"}
+
+Response: {
+  "username": "fcc_test",
+  "description": "test", 
+  "duration": 60,
+  "date": "Mon Jan 01 1990",
+  "_id": "507f1f77bcf86cd799439011"
+}</div>
+            </div>
+            <div class="example-item">
+                <div class="example-title">3. Get Exercise Log</div>
+                <div class="example-code">GET /api/users/507f1f77bcf86cd799439011/logs
+
+Response: {
+  "username": "fcc_test",
+  "count": 1,
+  "_id": "507f1f77bcf86cd799439011",
+  "log": [{
+    "description": "test",
+    "duration": 60,
+    "date": "Mon Jan 01 1990"
+  }]
+}</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Built with Express.js | Exercise tracking with user management</p>
+        </div>
+    </div>
+
+    <script>
+        // Handle create user form
+        document.getElementById('createUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const btn = document.getElementById('createUserBtn');
+            const apiResult = document.getElementById('apiResult');
+            
+            if (!username) {
+                showError('Please enter a username');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Creating...';
+            apiResult.innerHTML = '<span class="loading">Creating user...</span>';
+            
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}`
+                });
+                
+                const data = await response.json();
+                apiResult.textContent = JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    document.getElementById('username').value = '';
+                    loadUsers();
+                    updateUserSelects();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                apiResult.textContent = 'Error: Unable to connect to server';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Create User';
+            }
+        });
+        
+        // Handle add exercise form
+        document.getElementById('addExerciseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const description = document.getElementById('description').value.trim();
+            const duration = document.getElementById('duration').value;
+            const exerciseDate = document.getElementById('exerciseDate').value;
+            
+            const btn = document.getElementById('addExerciseBtn');
+            const apiResult = document.getElementById('apiResult');
+            
+            if (!userId || !description || !duration) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Adding...';
+            apiResult.innerHTML = '<span class="loading">Adding exercise...</span>';
+            
+            try {
+                let body = `description=${encodeURIComponent(description)}&duration=${duration}`;
+                if (exerciseDate) {
+                    body += `&date=${exerciseDate}`;
+                }
+                
+                const response = await fetch(`/api/users/${userId}/exercises`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body
+                });
+                
+                const data = await response.json();
+                apiResult.textContent = JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    document.getElementById('addExerciseForm').reset();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                apiResult.textContent = 'Error: Unable to connect to server';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '➕ Add Exercise';
+            }
+        });
+        
+        // Load all users
+        async function loadUsers() {
+            const apiResult = document.getElementById('apiResult');
+            const usersList = document.getElementById('usersList');
+            const usersContainer = document.getElementById('usersContainer');
+            
+            try {
+                apiResult.innerHTML = '<span class="loading">Loading users...</span>';
+                
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                
+                apiResult.textContent = JSON.stringify(users, null, 2);
+                
+                if (Array.isArray(users) && users.length > 0) {
+                    usersContainer.innerHTML = users.map(user => `
+                        <div class="user-item">
+                            <div class="user-info">
+                                <div class="user-name">${user.username}</div>
+                                <div class="user-id">ID: ${user._id}</div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn btn-small" onclick="loadUserLog('${user._id}')">
+                                    📋 View Log
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    usersList.style.display = 'block';
+                    document.getElementById('filterSection').style.display = 'block';
+                } else {
+                    usersContainer.innerHTML = '<p style="text-align: center; color: #666;">No users found. Create some users first!</p>';
+                    usersList.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                apiResult.textContent = 'Error: Unable to load users';
+            }
+        }
+        
+        // Update user select dropdowns
+        async function updateUserSelects() {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                
+                const userIdSelect = document.getElementById('userId');
+                const logUserIdSelect = document.getElementById('logUserId');
+                
+                // Clear existing options except the first one
+                userIdSelect.innerHTML = '<option value="">Select a user...</option>';
+                logUserIdSelect.innerHTML = '<option value="">Select user...</option>';
+                
+                if (Array.isArray(users)) {
+                    users.forEach(user => {
+                        const option1 = new Option(user.username, user._id);
+                        const option2 = new Option(user.username, user._id);
+                        userIdSelect.appendChild(option1);
+                        logUserIdSelect.appendChild(option2);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error updating user selects:', error);
+            }
+        }
+        
+        // Load exercise log for a user
+        async function loadUserLog(userId) {
+            document.getElementById('logUserId').value = userId;
+            loadExerciseLog();
+        }
+        
+        // Load exercise log with filters
+        async function loadExerciseLog() {
+            const userId = document.getElementById('logUserId').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const limit = document.getElementById('limit').value;
+            
+            const apiResult = document.getElementById('apiResult');
+            
+            if (!userId) {
+                showError('Please select a user first');
+                return;
+            }
+            
+            try {
+                apiResult.innerHTML = '<span class="loading">Loading exercise log...</span>';
+                
+                let url = `/api/users/${userId}/logs`;
+                const params = new URLSearchParams();
+                
+                if (fromDate) params.append('from', fromDate);
+                if (toDate) params.append('to', toDate);
+                if (limit) params.append('limit', limit);
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                apiResult.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                apiResult.textContent = 'Error: Unable to load exercise log';
+            }
+        }
+        
+        // Show error message
+        function showError(message) {
+            const apiResult = document.getElementById('apiResult');
+            apiResult.innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        // Initialize page
+        window.addEventListener('load', function() {
+            loadUsers();
+            updateUserSelects();
+        });
+    </script>
+</body>
+</html>
